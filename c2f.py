@@ -37,12 +37,14 @@ type_map={
         "long":"integer(c_long) ",
         "float":"real(c_float) ",
         "double":"real(c_double) ",
+        "char"  :"character(len=c_char)"
         }
 para_map={
         "int"     : "integer(c_int)  ,value                          :: ",
         "long"    : "integer(c_long) ,value                          :: ",
         "float"   : "real(c_float)   ,value                          :: ",
         "double"  : "real(c_double)  ,value                          :: ",
+        "char"    : "character(len=c_char),value                     :: ",
         "int*"    : "integer(c_int),intent(inout),dimension(*)       :: ",
         "long*"   : "integer(c_long),intent(inout),dimension(*)      :: ",
         "float*"  : "real(c_float),intent(inout),dimension(*)        :: ",
