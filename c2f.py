@@ -1,6 +1,6 @@
 import sys
-
 import re
+
 def parse_function_definition(definition):
     # get function name
     function_name = re.search(r'\w+(?=\()', definition).group()
@@ -34,23 +34,17 @@ def parse_function_definition(definition):
 
 type_map={
         "int":"integer(c_int) ",
+        "size_t":"integer(c_size_t)",
         "long":"integer(c_long) ",
         "float":"real(c_float) ",
         "double":"real(c_double) ",
-        "char"  :"character(len=c_char)"
+        "char":"character(len=c_char)",
         }
-para_map={
-        "int"     : "integer(c_int)  ,value                          :: ",
-        "long"    : "integer(c_long) ,value                          :: ",
-        "float"   : "real(c_float)   ,value                          :: ",
-        "double"  : "real(c_double)  ,value                          :: ",
-        "char"    : "character(len=c_char),value                     :: ",
-        "int*"    : "integer(c_int),intent(inout),dimension(*)       :: ",
-        "long*"   : "integer(c_long),intent(inout),dimension(*)      :: ",
-        "float*"  : "real(c_float),intent(inout),dimension(*)        :: ",
-        "double*" : "real(c_double),intent(inout),dimension(*)       :: ",
-        "char*"   : "character(len=c_char),intent(inout),dimension(*):: "
-        }
+para_map={}
+for key,value in type_map.items():
+    para_map[key]=value+",value::"
+    para_map[key+"*"]=value+",intent(inout),dimension(*)::"
+
 print("interface")
 with open(sys.argv[1], 'r') as file:
     lines = file.read().replace('\n', '').split(';')
