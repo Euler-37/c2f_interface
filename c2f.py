@@ -5,7 +5,7 @@ def parse_function_definition(definition):
     # get function name
     function_name = re.search(r'\w+(?=\()', definition).group()
     # get type
-    return_type = re.search(r'\w+\s*\**(?=\s+\w+\()', definition)
+    return_type = re.search(r'\w+\s*\*?(?=\s+\w+\()', definition)
     if return_type is None:
         return_type = 'NONETYPE'
     else:
@@ -15,7 +15,8 @@ def parse_function_definition(definition):
     para_type=[]
     para_list=[]
     for (i,p) in enumerate(parameters):
-        r=re.findall(r'(\w+\s*\**)\s+(\w+)', p)
+        #r=re.findall(r'(\w+\s*\*?)\s+(\w+)', p)
+        r=re.findall(r'(const\s+\w+\s*\*?|\w+\s*\*?)\s+(\w+)', p)
         if not r:
             # TYPE func(type)
             p=p.replace(" ", "")
@@ -26,9 +27,13 @@ def parse_function_definition(definition):
                 para_type.append(p)
                 para_list.append("my_arg"+str(i))
         else:
-            # TYPE func(type a)
-            para_type.append(r[0][0].replace(" ", ""))
-            para_list.append(r[0][1].replace(" ", ""))
+            if r[0][0]=="const":
+                para_type.append(p.replace(" ", ""))
+                para_list.append("my_arg"+str(i))
+            else:
+                # TYPE func(type a)
+                para_type.append(r[0][0].replace(" ", ""))
+                para_list.append(r[0][1].replace(" ", ""))
     return [return_type,function_name, para_type,para_list]
 
 
@@ -39,11 +44,13 @@ type_map={
         "float":"real(c_float) ",
         "double":"real(c_double) ",
         "char":"character(len=c_char)",
+        "void":"type(*)"
         }
 para_map={}
 for key,value in type_map.items():
     para_map[key]=value+",value::"
     para_map[key+"*"]=value+",intent(inout),dimension(*)::"
+    para_map["const"+key+"*"]=value+",intent(in),dimension(*)::"
 
 print("interface")
 with open(sys.argv[1], 'r') as file:
