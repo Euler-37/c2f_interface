@@ -12,6 +12,7 @@ no dependency
 Requirements : https://github.com/skywind3000/LIBLR
 
 **parser version only**
+- type scan `T` as `type(T)`
 - `[]` as `dimension(*)`
 - `type (* foo) ()` as `type(c_funcptr),value::`
 
