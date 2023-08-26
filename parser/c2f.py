@@ -20,8 +20,8 @@ paraitems: paraitems ',' typedef       {list_many}
 
 typedef  : type string                 {getdouble}
          | type string '[' ']'         {getarray}
-         | type                        {get1}
          | type '[' ']'                {getnonamearray}
+         | type                        {getnonameconst}
          | start                       {getfunc}
          ;
 
@@ -43,22 +43,40 @@ class SemanticAction:
         return args[2]
     def get3  (self, rule, args):
         return args[3]
+
     def getfunc (self, rule, args):
         return ("func",args[1])
+
     def getnone (self, rule, args):
         return None
+
     def gettwo  (self, rule, args):
         return args[1]+args[2]
     def getdouble  (self, rule, args):
         return (args[1],args[2])
+
     def getarray  (self, rule, args):
-        return ((args[1],"array"),args[2])
+        if isinstance(args[1],tuple):
+            return (args[1]+("array",),args[2])
+        else:
+            return ((args[1],"array"),args[2])
     def getnonamearray  (self, rule, args):
-        return (args[1],"array")
+        if isinstance(args[1],tuple):
+            return (args[1]+("array",),"")
+        else:
+            return ((args[1],"array"),"")
+
     def gettype  (self, rule, args):
         return args[1]
     def getconstype (self, rule, args):
         return ("const",args[2])
+
+    def getnonameconst (self, rule, args):
+        if isinstance(args[1],tuple):
+            return (args[1],"")
+        else:
+            return args[1]
+
     def list_many (self, rule, args):
         return args[1] + [args[3]]
     def list_one (self, rule, args):
@@ -107,12 +125,15 @@ for line in lines:
                paralist.append("myfunc"+str(i))
            else:
                typelist.append(s[0])
-               paralist.append(s[1])
+               if s[1]=="":
+                  paralist.append("myarg"+str(i))
+               else:
+                  paralist.append(s[1])
     for key in typelist:
        if key in para_map:
             pass
        else:
-           # type,type*
+            # type,type*
            if isinstance(key, str):
                if key[-1]=="*":
                    name=key[:-1]
