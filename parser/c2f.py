@@ -130,6 +130,7 @@ for line in lines:
                # const type array
                    name=key[1]
            cname="type("+name+")"
+           type_map[name]=cname
            para_map[name]=cname+",value::"
            para_map[name+"*"]=cname+",intent(inout),dimension(*)::"
            para_map[("const",name+"*")]=cname+",intent(in),dimension(*)::"
