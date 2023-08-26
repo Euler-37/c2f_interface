@@ -93,7 +93,6 @@ for line in lines:
     if not line:
         continue
     ast=parser(line)
-    print(ast)
     returntype,a=ast
     funcname,items=a
     paralist=[]
@@ -113,7 +112,7 @@ for line in lines:
        if key in para_map:
             pass
        else:
-            # type,type*
+           # type,type*
            if isinstance(key, str):
                if key[-1]=="*":
                    name=key[:-1]
@@ -130,7 +129,6 @@ for line in lines:
                elif len(key)==3:
                # const type array
                    name=key[1]
-           print(name)
            cname="type("+name+")"
            para_map[name]=cname+",value::"
            para_map[name+"*"]=cname+",intent(inout),dimension(*)::"
