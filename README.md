@@ -11,8 +11,8 @@ no dependency
 Requirements : https://github.com/skywind3000/LIBLR
 
 **parser version only**
-- "[]" as `dimension`
-- "type (* foo) ()" as `type(c_funcptr),value::`
+- `[]` as `dimension(*)`
+- `type (* foo) ()` as `type(c_funcptr),value::`
 
 # remarks
 - should have `;`
