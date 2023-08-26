@@ -125,4 +125,6 @@ for line in lines:
             pass
         else:
             print("   ",para_map[t],name)
+    print(endtitle)
+    print()
 print("end interface")
