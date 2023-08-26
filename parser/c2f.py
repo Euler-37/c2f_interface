@@ -80,6 +80,7 @@ for key,value in type_map.items():
     para_map[key]=value+",value::"
     para_map[key+"*"]=value+",intent(inout),dimension(*)::"
     para_map["const"+key+"*"]=value+",intent(in),dimension(*)::"
+    para_map[key+"array"]=value+",intent(inout),dimension(*)::"
     para_map["const"+key+"array"]=value+",intent(in),dimension(*)::"
 para_map["func"]="type(c_funcptr),value::"
 
