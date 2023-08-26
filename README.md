@@ -1,8 +1,9 @@
 # c2f_interface
 c interface to fortran interface
 # support
--  `int`,`long`,`float`,`double`,`char *`
-- `type *` as `dimension(*)`
+-  `int`,`long`,`float`,`double`,`char *`,`void`,add others in dict `type_map`
+- `type *` as `type,intent(inout),dimension(*)::`
+- `const type *` as `type,intent(in),dimension(*)::`
 
 # Two verisons
 ## re version
@@ -15,11 +16,11 @@ Requirements : https://github.com/skywind3000/LIBLR
 - `type (* foo) ()` as `type(c_funcptr),value::`
 
 # remarks
-- should have `;`
+- each line of c interface file should have `;`
 
 # example
 
- file "test.h" 
+ c interface in `"test.h"` 
  
 ``` c
 void print_hello(int,char*);
