@@ -162,7 +162,10 @@ for line in lines:
         title.append("subroutine "+funcname+" (")
         endtitle="end subroutine "+funcname
     else:
-        title.append(type_map[returntype]+" function "+funcname+" (")
+        if returntype[-1]=="*":
+            title.append("type(c_ptr) function "+funcname+" (")
+        else:
+            title.append(type_map[returntype]+" function "+funcname+" (")
         endtitle="end function "+funcname
     title.append(",".join(paralist))
     title.append(")bind(c)")
