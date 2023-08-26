@@ -83,6 +83,14 @@ class SemanticAction:
         return [args[1]]
     def list_empty (self, rule, args):
         return []
+def generate_map(key,value):
+    mymap={}
+    mymap[key]=value+",value::"
+    mymap[key+"*"]=value+",intent(inout),dimension(*)::"
+    mymap[("const",key+"*")]=value+",intent(in),dimension(*)::"
+    mymap[(key,"array")]=value+",intent(inout),dimension(*)::"
+    mymap[("const",key,"array")]=value+",intent(in),dimension(*)::"
+    return mymap
 
 type_map={
         "int":"integer(c_int) ",
@@ -95,11 +103,7 @@ type_map={
         }
 para_map={}
 for key,value in type_map.items():
-    para_map[key]=value+",value::"
-    para_map[key+"*"]=value+",intent(inout),dimension(*)::"
-    para_map[("const",key+"*")]=value+",intent(in),dimension(*)::"
-    para_map[(key,"array")]=value+",intent(inout),dimension(*)::"
-    para_map[("const",key,"array")]=value+",intent(in),dimension(*)::"
+    para_map.update(generate_map(key,value))
 para_map["func"]="type(c_funcptr),value::"
 
 import sys
@@ -112,13 +116,27 @@ for line in lines:
         continue
     ast=parser(line)
     returntype,a=ast
+    if returntype[-1]=="*":
+        name=returntype[:-1]
+    else:
+        name=returntype
+    if name in para_map:
+         pass
+    else:
+        cname="type("+name+")"
+        type_map[name]=cname
+        para_map.update(generate_map(name,cname))
+
     funcname,items=a
     paralist=[]
     typelist=[]
     for i,s in enumerate(items):
        if isinstance(s, str):
-          typelist.append(s)
-          paralist.append("myarg"+str(i))
+          if s=="void":
+              pass
+          else:
+              typelist.append(s)
+              paralist.append("myarg"+str(i))
        else:
            if s[0]=="func":
                typelist.append("func")
@@ -152,11 +170,7 @@ for line in lines:
                    name=key[1]
            cname="type("+name+")"
            type_map[name]=cname
-           para_map[name]=cname+",value::"
-           para_map[name+"*"]=cname+",intent(inout),dimension(*)::"
-           para_map[("const",name+"*")]=cname+",intent(in),dimension(*)::"
-           para_map[(name,"array")]=cname+",intent(inout),dimension(*)::"
-           para_map[("const",name,"array")]=cname+",intent(in),dimension(*)::"
+           para_map.update(generate_map(name,cname))
     title=[]
     if returntype=="void":
         title.append("subroutine "+funcname+" (")
