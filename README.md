@@ -1,11 +1,18 @@
 # c2f_interface
 c interface to fortran interface
-
 # support
-
-`int`,`long`,`float`,`double`,`char *`
-
+-  `int`,`long`,`float`,`double`,`char *`
 - `type *` as `dimension(*)`
+
+#There are two verisons
+## re version
+no dependency
+## parser version
+Requirements : https://github.com/skywind3000/LIBLR
+
+ support
+- "[]" as `dimension`
+- "type (* foo) ()" as `type(c_funcptr),value::`
 
 # remarks
 - should have `;`
