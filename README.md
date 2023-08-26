@@ -59,3 +59,41 @@ end function sum
 
 end interface
 ```
+
+parser version
+
+``` c
+void test(int hello);
+void qsort(const T * test,int,int,int (*cmp)(const void*,const void*));
+void test2(WIN hello[],int);
+void test3(const LINUX* hello,int);
+```
+``` fortran
+interface
+subroutine test (hello)bind(c)
+    use iso_c_binding
+    integer(c_int) ,value:: hello
+end subroutine test
+
+subroutine qsort (test,myarg1,myarg2,myfunc3)bind(c)
+    use iso_c_binding
+    type(T),intent(in),dimension(*):: test
+    integer(c_int) ,value:: myarg1
+    integer(c_int) ,value:: myarg2
+    type(c_funcptr),value:: myfunc3
+end subroutine qsort
+
+subroutine test2 (hello,myarg1)bind(c)
+    use iso_c_binding
+    type(WIN),intent(inout),dimension(*):: hello
+    integer(c_int) ,value:: myarg1
+end subroutine test2
+
+subroutine test2 (hello,myarg1)bind(c)
+    use iso_c_binding
+    type(LINUX),intent(in),dimension(*):: hello
+    integer(c_int) ,value:: myarg1
+end subroutine test2
+
+end interface
+```
