@@ -4,13 +4,13 @@ c interface to fortran interface
 -  `int`,`long`,`float`,`double`,`char *`
 - `type *` as `dimension(*)`
 
-#There are two verisons
+# Two verisons
 ## re version
 no dependency
 ## parser version
 Requirements : https://github.com/skywind3000/LIBLR
 
- support
+**parser version only**
 - "[]" as `dimension`
 - "type (* foo) ()" as `type(c_funcptr),value::`
 
