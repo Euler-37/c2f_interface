@@ -52,13 +52,13 @@ class SemanticAction:
     def getdouble  (self, rule, args):
         return (args[1],args[2])
     def getarray  (self, rule, args):
-        return (args[1]+"array",args[2])
+        return ((args[1],"array"),args[2])
     def getnonamearray  (self, rule, args):
-        return args[1]+"array"
+        return (args[1],"array")
     def gettype  (self, rule, args):
         return args[1]
     def getconstype (self, rule, args):
-        return "const"+args[2]
+        return ("const",args[2])
     def list_many (self, rule, args):
         return args[1] + [args[3]]
     def list_one (self, rule, args):
@@ -79,9 +79,9 @@ para_map={}
 for key,value in type_map.items():
     para_map[key]=value+",value::"
     para_map[key+"*"]=value+",intent(inout),dimension(*)::"
-    para_map["const"+key+"*"]=value+",intent(in),dimension(*)::"
-    para_map[key+"array"]=value+",intent(inout),dimension(*)::"
-    para_map["const"+key+"array"]=value+",intent(in),dimension(*)::"
+    para_map[("const",key+"*")]=value+",intent(in),dimension(*)::"
+    para_map[(key,"array")]=value+",intent(inout),dimension(*)::"
+    para_map[("const",key,"array")]=value+",intent(in),dimension(*)::"
 para_map["func"]="type(c_funcptr),value::"
 
 import sys
@@ -96,14 +96,6 @@ for line in lines:
     print(ast)
     returntype,a=ast
     funcname,items=a
-
-    title=[]
-    if returntype=="void":
-        title.append("subroutine "+funcname+" (")
-        endtitle="end subroutine "+funcname
-    else:
-        title.append(type_map[returntype]+" function "+funcname+" (")
-        endtitle="end function "+funcname
     paralist=[]
     typelist=[]
     for i,s in enumerate(items):
@@ -117,6 +109,41 @@ for line in lines:
            else:
                typelist.append(s[0])
                paralist.append(s[1])
+    for key in typelist:
+       if key in para_map:
+            pass
+       else:
+            # type,type*
+           if isinstance(key, str):
+               if key[-1]=="*":
+                   name=key[:-1]
+               else:
+                   name=key
+           else:
+               # const type*
+               # type array
+               if len(key)==2:
+                   if key[0]=="const":
+                       name=key[1][:-1]
+                   else:
+                       name=key[0]
+               elif len(key)==3:
+               # const type array
+                   name=key[1]
+           print(name)
+           cname="type("+name+")"
+           para_map[name]=cname+",value::"
+           para_map[name+"*"]=cname+",intent(inout),dimension(*)::"
+           para_map[("const",name+"*")]=cname+",intent(in),dimension(*)::"
+           para_map[(name,"array")]=cname+",intent(inout),dimension(*)::"
+           para_map[("const",name,"array")]=cname+",intent(in),dimension(*)::"
+    title=[]
+    if returntype=="void":
+        title.append("subroutine "+funcname+" (")
+        endtitle="end subroutine "+funcname
+    else:
+        title.append(type_map[returntype]+" function "+funcname+" (")
+        endtitle="end function "+funcname
     title.append(",".join(paralist))
     title.append(")bind(c)")
     print("".join(title))
