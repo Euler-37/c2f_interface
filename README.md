@@ -4,6 +4,9 @@ c interface to fortran interface
 -  `int`,`long`,`float`,`double`,`char *`,`void`,add others in dict `type_map`
 - `type *` as `type,intent(inout),dimension(*)::`
 - `const type *` as `type,intent(in),dimension(*)::`
+# not support
+- `type**`,like `char**`
+- two words typename ,like `long long`
 
 # Two verisons
 ## re version
